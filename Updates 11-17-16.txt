@@ -1,0 +1,25 @@
+Done-
+	- GUI should scale for different computers (1)
+	- config automatically checked for (2)
+		right now, if any parameter is updated (even if no change) config will be rewritten
+	- changed save name and save file names (8)
+	- disable most control during session (10)
+	- lines should stay red/blue (6)
+	- x axis ticks don't change (7)
+	- updating ylimits (5)
+	- MB/GB/s/min/h (4)
+
+To test-
+
+ToDo-
+	- sensor and station names (3)
+	- check if save size too small (4.5)
+	- get rid of 10e4
+	- check if enough room to save
+	- turn on/off plot during session
+	- round file name
+    	- check if get_irig needs to be g or not
+
+Notes-
+	- 40% cpu 60% mem
+	- files fail at 1 MHz and 6 channels
