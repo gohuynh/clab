@@ -169,7 +169,7 @@ elseif initIRIG < 0
         errorFileInfo = dir(errorLogName);
         saveFileInfo = dir(saveLogName);
         if errorFileInfo.bytes == 0
-            delete(errorLogName);
+            delete(errorFileName);
         end
         errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
         saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];

@@ -1,4 +1,6 @@
 function myFid = write_header(psd_info,filename)
+global errorFid;
+global saveFid;
 %% Format or retrieve session details
 myFid = fopen(filename,'w','ieee-be');
 aChannels = psd_info.aChannels;
@@ -47,9 +49,9 @@ writes = writes + fwrite(myFid,sensorRef,'char');% Sensor ref (n char) (n bytes)
 if totalWrites ~= writes
     errormsg = ['Error in writing header ', datestr(datetime('now')), '\n'];
     fprintf(errormsg);
-    fprintf(psd_info.errorFid, errormsg,'char');
+    fprintf(errorFid, errormsg,'char');
 end
-fprintf(psd_info.saveFid, '      Expected Writes: %d | MATLAB Writes: %d | Expected Bytes: %d ', totalWrites, writes, headerSize + 4);
+fprintf(saveFid, '      eWrites: %d | aWrites: %d | eBytes: %d ', totalWrites, writes, headerSize + 4);
 
 
 

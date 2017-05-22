@@ -21,6 +21,10 @@ global scalingFactor;
 global initIRIGConst;
 global IRIGsampTimeConst;
 global plotLive;
+global errorFid;
+global saveFid;
+global errorLogName;
+global saveLogName;
 
 %% Initial variables
 myInfo = psd_info;
@@ -40,6 +44,11 @@ x = linspace(1,10,sampR);
 fileMemory = myInfo.saveMemory;
 fileTime = myInfo.saveTime;
 mainLabel = myInfo.clock;
+
+errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
+saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
+errorFid = fopen(errorLogName, 'wt');
+saveFid = fopen(saveLogName, 'wt');
 
 %% DAQ settings
 daqreset;
@@ -132,6 +141,16 @@ try
     fclose(myFid);
 catch
     warning('Session stopped before IRIG acquired. No files created');
+end
+fclose(errorFid);
+fclose(saveFid);
+errorFileInfo = dir(errorLogName);
+saveFileInfo = dir(saveLogName);
+if errorFileInfo.bytes == 0
+    delete(errorLogName);
+end
+if saveFileInfo.bytes ==0
+    delete(saveLogName);
 end
 daqreset();
 if plotLive

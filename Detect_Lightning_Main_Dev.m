@@ -424,11 +424,6 @@ psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
 
-errorFileName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
-saveFileName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
-psd_info.errorFid = fopen(errorFileName, 'wt');
-psd_info.saveFid = fopen(saveFileName, 'wt');
-
 set(handles.startButton,'Enable','off');
 if(newSave)
     set(handles.statusLabel,'String','Saving new configurations');
@@ -443,16 +438,6 @@ set(handles.statusLabel,'String','Sampling...');
 runEnDis(handles,0);
 cd('Subroutines');
 samp_and_saveMHz(psd_info);
-fclose(psd_info.errorFid);
-fclose(psd_info.saveFid);
-errorFileInfo = dir(errorFileName);
-saveFileInfo = dir(saveFileName);
-if errorFileInfo.bytes == 0
-    delete(errorFileName);
-end
-if saveFileInfo.bytes ==0
-    delete(saveFileName);
-end
 fprintf('Session stopped\n');
 
 
