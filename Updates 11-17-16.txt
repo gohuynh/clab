@@ -18,7 +18,7 @@ ToDo-
 	- check if enough room to save
 	- turn on/off plot during session
 	- round file name
-    	- check if get_irig needs to be g or not
+    	- check if get_irig needs to be g-version or not
 
 Notes-
 	- 40% cpu 60% mem

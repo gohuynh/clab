@@ -83,10 +83,18 @@ elseif initIRIG < 0
         chanData = chanData * (2^myInfo.cardResolution) / 20;
         irigData = round(irigData);
         chanData = round(chanData);
+        
         if IRIGsampTime > 0
             IRIGsampTime = IRIGsampTime - 1;
         end
-        fwrite(myFid,[irigData;chanData],'int16');
+        
+        writes = fwrite(myFid,[irigData;chanData],'int16');
+        if(writes ~= sampR + size(chanData,1)*sampR)
+            errormsg = ['Error in writing IRIG ', datestr(datetime('now')), '\n'];
+            fprintf(errormsg);
+            fprintf(psd_info.errorFid, errormsg,'char');
+        end
+        
         if IRIGsampTime == 0
             fwrite(myFid,hex2dec('7FFF'),'int16');
             fprintf('IRIG Done!\n');
@@ -94,10 +102,16 @@ elseif initIRIG < 0
                 fileMemory = fileMemory - 2 * sampR * myInfo.IRIGtime;
             end
         end
+        
     else
         chanData = chanData * (2^myInfo.cardResolution) / 20;
         chanData = round(chanData);
-        fwrite(myFid,chanData,'int16');
+        writes = fwrite(myFid,chanData,'int16');
+        if(writes ~= size(chanData,1)*sampR)
+            errormsg = ['Error in writing data ', datestr(datetime('now')), '\n'];
+            fprintf(errormsg);
+            fprintf(psd_info.errorFid, errormsg,'char');
+        end
     end
     
     if myInfo.saveType == 2 || myInfo.saveType == 3

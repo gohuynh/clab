@@ -426,7 +426,7 @@ psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
 
-psd_info.errorFid = fopen('error_log.txt', 'wt');
+psd_info.
 
 set(handles.startButton,'Enable','off');
 if(newSave)
@@ -442,7 +442,6 @@ set(handles.statusLabel,'String','Sampling...');
 runEnDis(handles,0);
 cd('Subroutines');
 samp_and_saveMHz(psd_info);
-fclose(psd_info.errorFid);
 
 
 

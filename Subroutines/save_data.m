@@ -81,7 +81,13 @@ elseif initIRIG < 0
         if IRIGsampTime > 0
             IRIGsampTime = IRIGsampTime - 1;
         end
-        fwrite(myFid,[irigData;chanData],'int16');
+        writes = fwrite(myFid,[irigData;chanData],'int16');
+        if(writes ~= 2*sampR)
+            errormsg = ['Error in writing header ', datestr(datetime('now')), '\n'];
+            fprintf(errormsg);
+            fprintf(psd_info.errorFid, errormsg,'char');
+        end
+        
         if IRIGsampTime == 0
             fwrite(myFid,hex2dec('7FFF'),'int16');
             fprintf('IRIG Done!\n');
