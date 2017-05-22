@@ -49,6 +49,7 @@ if totalWrites ~= writes
     fprintf(errormsg);
     fprintf(psd_info.errorFid, errormsg,'char');
 end
+fprintf(psd_info.saveFid, '      Expected Writes: %d | MATLAB Writes: %d | Expected Bytes: %d ', totalWrites, writes, headerSize + 4);
 
 
 

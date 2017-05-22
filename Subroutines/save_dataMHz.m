@@ -22,6 +22,7 @@ global IRIGsampTimeConst;
 global fig_one;
 global fig_two;
 global plotLive;
+global fileName;
 
 %% Seperate data from daq
 data = event.Data';
@@ -53,8 +54,10 @@ if initIRIG == 0
     initIRIG = initIRIG - 1;
     fprintf('Time start acquired\n');
     fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
-    myFid = write_header(myInfo,fileName);
     fprintf(myInfo.saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
+    myFid = write_header(myInfo,fileName);
+    fileInfo = dir(fileName);
+    fprintf(myInfo.saveFid, 'File bytes: %d\n', fileInfo.bytes);
 elseif initIRIG < 0
     %% Continuous code
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
@@ -90,6 +93,7 @@ elseif initIRIG < 0
         end
         
         writes = fwrite(myFid,[irigData;chanData],'int16');
+        expectedWrites = sampR + size(chanData,1)*sampR;
         if(writes ~= sampR + size(chanData,1)*sampR)
             errormsg = ['Error in writing IRIG ', datestr(datetime('now')), '\n'];
             fprintf(errormsg);
@@ -105,7 +109,13 @@ elseif initIRIG < 0
             if myInfo.saveType == 2 || myInfo.saveType == 3
                 fileMemory = fileMemory - 2 * sampR * myInfo.IRIGtime;
             end
+            expectedWrites = expectedWrites + 1;
+            writes = writes + 1;
         end
+        
+        fileInfo = dir(fileName);
+        fprintf(myInfo.saveFid, '      Expected Writes: %d | MATLAB Writes: %d | Expected Bytes: %d | File Bytes: %d\n',...
+                expectedWrites, writes, 2*(expectedWrites), fileInfo.bytes);
         
     else
         chanData = chanData * (2^myInfo.cardResolution) / 20;
@@ -119,6 +129,9 @@ elseif initIRIG < 0
             savemsg = ['Data saved at: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), '\n'];
             fprintf(myInfo.saveFid, savemsg, 'char');
         end
+        fileInfo = dir(fileName);
+        fprintf(myInfo.saveFid, '      Expected Writes: %d | MATLAB Writes: %d | Expected Bytes: %d | File Bytes: %d\n',...
+                size(chanData,1)*sampR, writes, 2*(size(chanData,1)*sampR), fileInfo.bytes);
     end
     
     if myInfo.saveType == 2 || myInfo.saveType == 3
@@ -140,8 +153,9 @@ elseif initIRIG < 0
             fprintf(myInfo.errorFid, errormsg, 'char');
         end
         fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
-        myFid = write_header(myInfo,fileName);
         fprintf(myInfo.saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
+        myFid = write_header(myInfo,fileName);
+        fprintf(myInfo.saveFid, 'File bytes: %d\n', fileInfo.bytes);
         fprintf('File saved\n');
     end
 end

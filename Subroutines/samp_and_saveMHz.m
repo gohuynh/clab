@@ -76,7 +76,7 @@ cc = addClockConnection(s, 'external', 'Dev1/PFI7', 'ScanClock');
 s.IsContinuous = true;
 s.Rate = sampR;
 lh1 = addlistener(s,'DataAvailable', @save_dataMHz);
-lh2 = addlistener(s,'ErrorOccured', @(src, event) disp(getReport(event.Error)));
+lh2 = addlistener(s,'ErrorOccurred', @(src, event) disp(getReport(event.Error)));
 s.NotifyWhenDataAvailableExceeds = sampR;
 
 %% Setting up plotting
