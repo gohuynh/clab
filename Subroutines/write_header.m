@@ -44,7 +44,7 @@ writes = writes + fwrite(myFid,clockType,'char');% Clock type (n char) (n bytes)
 writes = writes + fwrite(myFid,cardResolution,'float64');% Card resolution (1 double) (8 bytes)
 writes = writes + fwrite(myFid,length(sensorRef),'uint32');% Length of sensor ref (1 int) (4 bytes)
 writes = writes + fwrite(myFid,sensorRef,'char');% Sensor ref (n char) (n bytes)
-if(totalWrites ~= writes)
+if totalWrites ~= writes
     errormsg = ['Error in writing header ', datestr(datetime('now')), '\n'];
     fprintf(errormsg);
     fprintf(psd_info.errorFid, errormsg,'char');

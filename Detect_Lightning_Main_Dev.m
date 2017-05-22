@@ -600,6 +600,12 @@ if newSave == 0
     newSave = 1;
     set(handles.dataInLabel,'String','Changes detected, config.txt will be updated on start');
 end
+if initReady(1) && initReady(9) && initReady(10)
+    set(handles.memQuantText,'Enable','on');
+else
+    set(handles.memQuantText,'Enable','off');
+    set(handles.memQuantText,'String','Check IRIG and/or Sampling rate');
+end
 if all(initReady)
     set(handles.startButton,'Enable','on');
     if sum(aChannels) == 1
@@ -1062,26 +1068,56 @@ global saveTime;
 global saveMemory;
 global saveType;
 global initReady;
+global sampRate;
+global IRIGtime;
 tempQuant = str2double(get(handles.memQuantText,'String'));
-if isempty(tempQuant)
+if isempty(tempQuant) || isnan(tempQuant)
     initReady(11) = 0;
 else
-    initReady(11) = 1;
     if saveType == 2
-        saveMemory = tempQuant*1e6;
-        saveTime = 1;
+        scaledQuant = tempQuant*1e6;
+        if scaledQuant < 2*IRIGtime*sampRate
+            initReady(11) = 0;
+        else
+            saveMemory = scaledQuant;
+            saveTime = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 3
-        saveMemory = tempQuant*1e9;
-        saveTime = 1;
+        scaledQuant = tempQuant*1e9;
+        if scaledQuant < 2*sampR*IRIGtime
+            initReady(11) = 0;
+        else
+            saveMemory = scaledQuant;
+            saveTime = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 4
-        saveTime = tempQuant;
-        saveMemory = 1;
+        if tempQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = tempQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 5
-        saveTime = tempQuant * 60;
-        saveMemory = 1;
+        scaledQuant = tempQuant * 60;
+        if scaledQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = scaledQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     else
-        saveTime = tempQuant * 3600;
-        saveMemory = 1;
+        scaledQuant = tempQuant * 3600;
+        if scaledQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = scaledQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     end
 end
 checkReady(handles);

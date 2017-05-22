@@ -98,7 +98,7 @@ elseif initIRIG < 0
         if IRIGsampTime == 0
             fwrite(myFid,hex2dec('7FFF'),'int16');
             fprintf('IRIG Done!\n');
-            if myInfo.saveType == 2
+            if myInfo.saveType == 2 || myInfo.saveType == 3
                 fileMemory = fileMemory - 2 * sampR * myInfo.IRIGtime;
             end
         end
