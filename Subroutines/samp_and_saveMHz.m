@@ -20,6 +20,7 @@ global mainLabel;
 global scalingFactor;
 global initIRIGConst;
 global IRIGsampTimeConst;
+global plotLive;
 
 %% Initial variables
 myInfo = psd_info;
@@ -74,11 +75,12 @@ cc = addClockConnection(s, 'external', 'Dev1/PFI7', 'ScanClock');
 % Session Settings
 s.IsContinuous = true;
 s.Rate = sampR;
-lh = addlistener(s,'DataAvailable', @save_dataMHz);
+lh1 = addlistener(s,'DataAvailable', @save_dataMHz);
+lh2 = addlistener(s,'ErrorOccured', @(src, event) disp(getReport(event.Error)));
 s.NotifyWhenDataAvailableExceeds = sampR;
 
 %% Setting up plotting
-if myInfo.plotLive
+if plotLive
     
     fig_one = psd_info.axes1;
     fig_two = psd_info.axes2;
@@ -133,7 +135,7 @@ catch
 end
 fprintf('Session stopped\n');
 daqreset();
-if myInfo.plotLive
+if plotLive
     cla(fig_one,'reset');
     cla(fig_two,'reset');
 end

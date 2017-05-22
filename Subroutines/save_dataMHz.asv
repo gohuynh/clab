@@ -21,13 +21,12 @@ global initIRIGConst;
 global IRIGsampTimeConst;
 global fig_one;
 global fig_two;
-global plotLive;
 
 %% Seperate data from daq
 data = event.Data';
 irigData = data(1,:);
 chanData = data(2:end,:);
-fprintf('DATA IN | ');
+fprintf('DATA IN');
 %% Find starting time
 % Gather 2 seconds of IRIG to get initial time start
 if initIRIG > 0
@@ -53,15 +52,15 @@ if initIRIG == 0
     initIRIG = initIRIG - 1;
     fprintf('Time start acquired\n');
     fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
+    tic;
     myFid = write_header(myInfo,fileName);
-    fprintf(myInfo.saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
+    fprintf('Time to write header: %d\n',toc);
 elseif initIRIG < 0
     %% Continuous code
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
     currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
-    fprintf(myInfo.saveFid, ['   DATA IN at: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
-    if plotLive
+    if myInfo.plotLive
         if fig1Index ~= 0
             delete(fig_one.Children);
             plot(fig_one,x,chanData(fig1Index,1:sampR),'color','b');
@@ -95,13 +94,13 @@ elseif initIRIG < 0
             fprintf(errormsg);
             fprintf(myInfo.errorFid, errormsg,'char');
         else
-            savemsg = ['IRIG and data saved at: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), '\n'];
+            savemsg = ['IRIG and data saved at: ', datestr(datetime('now')), '\n'];
             fprintf(myInfo.saveFid, savemsg,'char');
         end
         
         if IRIGsampTime == 0
             fwrite(myFid,hex2dec('7FFF'),'int16');
-            fprintf('IRIG Done! | ');
+            fprintf('IRIG Done!\n');
             if myInfo.saveType == 2 || myInfo.saveType == 3
                 fileMemory = fileMemory - 2 * sampR * myInfo.IRIGtime;
             end
@@ -116,7 +115,7 @@ elseif initIRIG < 0
             fprintf(errormsg);
             fprintf(myInfo.errorFid, errormsg,'char');
         else
-            savemsg = ['Data saved at: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), '\n'];
+            savemsg = ['Data saved at: ', datestr(datetime('now')), '\n'];
             fprintf(myInfo.saveFid, savemsg, 'char');
         end
     end
@@ -141,7 +140,6 @@ elseif initIRIG < 0
         end
         fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
         myFid = write_header(myInfo,fileName);
-        fprintf(myInfo.saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
         fprintf('File saved\n');
     end
 end

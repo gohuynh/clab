@@ -447,12 +447,7 @@ fclose(psd_info.errorFid);
 fclose(psd_info.saveFid);
 errorFileInfo = dir(errorFileName);
 saveFileInfo = dir(saveFileName);
-if errorFileInfo.bytes == 0
-    delete(errorFileName);
-end
-if saveFileInfo.bytes ==0
-    delete(saveFileName);
-end
+if errorFileInfo
 
 
 
