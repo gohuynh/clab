@@ -133,7 +133,6 @@ try
 catch
     warning('Session stopped before IRIG acquired. No files created');
 end
-fprintf('Session stopped\n');
 daqreset();
 if plotLive
     cla(fig_one,'reset');

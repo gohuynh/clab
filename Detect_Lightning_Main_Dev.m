@@ -453,6 +453,7 @@ end
 if saveFileInfo.bytes ==0
     delete(saveFileName);
 end
+fprintf('Session stopped\n');
 
 
 
