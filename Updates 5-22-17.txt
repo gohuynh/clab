@@ -2,11 +2,11 @@ Done-
 	- check if save size too small (4.5)
 	- turn on/off plot during session
     - display uptime
+    - check if enough IRIG was saved else delete file
 
 To test-
 
 ToDo-
-    - check if enough IRIG was saved else delete file
 	- round file name?
     	- check if get_irig needs to be g-version or not
 	- check if enough room to save?

@@ -1,7 +1,5 @@
 function save_dataMHz(src,event)
 %% Global variables
-% global aline1; % animatedLine for fig1
-% global aline2; % animatedLine for fig2
 global currTime; % Current time this code is called
 global fig1Index; % channel displayed in fig1
 global fig2Index; % channel displayed in fig2
@@ -15,21 +13,21 @@ global myInfo; % All the information gathered by GUI
 global sampR; % Sampling rate
 global timeStart; % Initial time session began
 global x; % x values to use for animatedLine
-global mainLabel;
-global uptimeLabel;
-global scalingFactor;
-global initIRIGConst;
-global IRIGsampTimeConst;
-global fig_one;
-global fig_two;
-global plotLive;
-global fileName;
-global errorFid;
-global saveFid;
-global errorLogName;
-global saveLogName;
-global showPlot;
-global filesCreated;
+global mainLabel; % Label for clock and other information
+global uptimeLabel; % Label for uptime
+global scalingFactor; % Scaling factor for sampling >= 1 MHz
+global initIRIGConst; % Number of runs for 2 seconds worth of IRIG
+global IRIGsampTimeConst; % Amount of IRIG to be saved for each file
+global fig_one; % Figure of fig1
+global fig_two; % Figure of fig2
+global plotLive; % Boolean to live plot
+global fileName; % Name of current file
+global errorFid; % FID for error log
+global saveFid; % FID for save log
+global errorLogName; % Name of error log
+global saveLogName; % Name of save log
+global showPlot; % Boolean to show or hide plot
+global filesCreated; % Number of files created
 
 %% Seperate data from daq
 data = event.Data';

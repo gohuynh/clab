@@ -20,11 +20,12 @@ global scalingFactor; % Scaling factor for sampling >= 1 MHz
 global initIRIGConst; % Number of runs for 2 seconds worth of IRIG
 global IRIGsampTimeConst; % Amount of IRIG to be saved for each file
 global plotLive; % Boolean to live plot
+global fileName; % Name of current file
 global errorFid; % FID for error log
 global saveFid; % FID for save log
 global errorLogName; % Name of error log
 global saveLogName; % Name of save log
-global filesCreated; % Number of filesCreated
+global filesCreated; % Number of files created
 
 %% Initial variables
 myInfo = psd_info;
@@ -146,6 +147,14 @@ end
 % Close most recent file
 try
     fclose(myFid);
+    % If not enough IRIG saved, delete file
+    if IRIGsampTime ~= 0
+        button = questdlg(sprintf('File %s does not have specified IRIG amount. Delete?', fileName), 'Small File', 'Yes', 'No', 'Yes');
+        switch button
+            case 'Yes'
+                delete(fileName);
+        end
+    end
 catch
     warning('Session stopped before IRIG acquired. No files created');
 end

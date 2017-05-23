@@ -419,6 +419,7 @@ runEnDis(handles,0);
 cd('Subroutines');
 samp_and_saveMHz(psd_info);
 fprintf('Session stopped\n');
+set(handles.statusLabel,'String','Ready');
 
 
 
