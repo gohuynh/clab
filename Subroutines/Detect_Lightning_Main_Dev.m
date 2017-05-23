@@ -22,7 +22,7 @@ function varargout = Detect_Lightning_Main_Dev(varargin)
 
 % Edit the above text to modify the response to help Detect_Lightning_Main_Dev
 
-% Last Modified by GUIDE v2.5 17-Nov-2016 19:02:19
+% Last Modified by GUIDE v2.5 23-May-2017 09:37:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -92,6 +92,7 @@ global saveMemory;
 global saveTime;
 global IRIGtype;
 global newSave;
+global showPlot;
 
 keepRunning = 0;
 initReady = [0 0 0 0 0 0 ...
@@ -390,7 +391,6 @@ global sensRef;
 global keepRunning;
 global IRIGtime;
 global suffix;
-global plotLive;
 global fig1Chan;
 global fig2Chan;
 global ylow;
@@ -412,7 +412,6 @@ psd_info.sampRate = sampRate;
 psd_info.sensRef = sensRef;
 psd_info.IRIGtime = IRIGtime;
 psd_info.suffix = suffix;
-psd_info.plotLive = plotLive;
 psd_info.fig1Chan = fig1Chan;
 psd_info.fig2Chan = fig2Chan;
 psd_info.ylow = ylow;
@@ -425,7 +424,6 @@ keepRunning = 1;
 psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
-
 
 set(handles.startButton,'Enable','off');
 if(newSave)
@@ -441,6 +439,7 @@ set(handles.statusLabel,'String','Sampling...');
 runEnDis(handles,0);
 cd('Subroutines');
 samp_and_saveMHz(psd_info);
+fprintf('Session stopped\n');
 
 
 
@@ -598,6 +597,12 @@ if newSave == 0
     newSave = 1;
     set(handles.dataInLabel,'String','Changes detected, config.txt will be updated on start');
 end
+if initReady(1) && initReady(9) && initReady(10)
+    set(handles.memQuantText,'Enable','on');
+else
+    set(handles.memQuantText,'Enable','off');
+    set(handles.memQuantText,'String','Check IRIG and/or Sampling rate');
+end
 if all(initReady)
     set(handles.startButton,'Enable','on');
     if sum(aChannels) == 1
@@ -734,8 +739,10 @@ function plotBox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of plotBox
 global initReady;
 global plotLive;
+global showPlot;
 global aChannels;
 plotLive = get(handles.plotBox,'Value');
+showPlot = plotLive;
 if plotLive
     initReady(12) = 0;
     set(handles.fig1Menu,'Enable','on');
@@ -1060,26 +1067,56 @@ global saveTime;
 global saveMemory;
 global saveType;
 global initReady;
+global sampRate;
+global IRIGtime;
 tempQuant = str2double(get(handles.memQuantText,'String'));
-if isempty(tempQuant)
+if isempty(tempQuant) || isnan(tempQuant)
     initReady(11) = 0;
 else
-    initReady(11) = 1;
     if saveType == 2
-        saveMemory = tempQuant*1e6;
-        saveTime = 1;
+        scaledQuant = tempQuant*1e6;
+        if scaledQuant < 2*IRIGtime*sampRate
+            initReady(11) = 0;
+        else
+            saveMemory = scaledQuant;
+            saveTime = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 3
-        saveMemory = tempQuant*1e9;
-        saveTime = 1;
+        scaledQuant = tempQuant*1e9;
+        if scaledQuant < 2*sampR*IRIGtime
+            initReady(11) = 0;
+        else
+            saveMemory = scaledQuant;
+            saveTime = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 4
-        saveTime = tempQuant;
-        saveMemory = 1;
+        if tempQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = tempQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     elseif saveType == 5
-        saveTime = tempQuant * 60;
-        saveMemory = 1;
+        scaledQuant = tempQuant * 60;
+        if scaledQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = scaledQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     else
-        saveTime = tempQuant * 3600;
-        saveMemory = 1;
+        scaledQuant = tempQuant * 3600;
+        if scaledQuant < IRIGtime
+            initReady(11) = 0;
+        else
+            saveTime = scaledQuant;
+            saveMemory = 1;
+            initReady(11) = 1;
+        end
     end
 end
 checkReady(handles);
@@ -1223,5 +1260,15 @@ else
 end
 set(handles.updateFigMenu,'Enable',notstatus);
 set(handles.updateButton,'Enable',notstatus);
+set(handles.showHideButton,'Enable',notstatus);
 set(handles.startButton,'Enable',status);
 set(handles.stopButton,'Enable',notstatus);
+
+
+% --- Executes on button press in showHideButton.
+function showHideButton_Callback(hObject, eventdata, handles)
+% hObject    handle to showHideButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global showPlot
+showPlot = -(showPlot - 1);

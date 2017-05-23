@@ -27,6 +27,7 @@ global errorFid;
 global saveFid;
 global errorLogName;
 global saveLogName;
+global showPlot;
 
 %% Seperate data from daq
 data = event.Data';
@@ -68,22 +69,25 @@ elseif initIRIG < 0
     currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
-    if plotLive
+    if plotLive && showPlot
         if fig1Index ~= 0
             delete(fig_one.Children);
             plot(fig_one,x,chanData(fig1Index,1:sampR),'color','b');
         else
-            delete(fig_one.Children)
+            delete(fig_one.Children);
             plot(fig_one,x,irigData(1,1:sampR),'color','b');
         end
         if fig2Index ~= 0
-            delete(fig_two.Children)
+            delete(fig_two.Children);
             plot(fig_two,x,chanData(fig2Index,1:sampR),'color','r');
         else
-            delete(fig_two.Children)
+            delete(fig_two.Children);
             plot(fig_two,x,irigData(1,1:sampR),'color','r');
         end
 %         x = x + sampR;
+    elseif showPlot == 0 && (~isempty(fig_one.Children) || ~isempty(fig_two.Children))
+        delete(fig_one.Children);
+        delete(fig_two.Children);
     end
     
     if IRIGsampTime~=0
