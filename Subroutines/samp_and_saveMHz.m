@@ -1,7 +1,5 @@
 function samp_and_saveMHz(psd_info)
 %% Global variables
-% global aline1; % animatedLine for fig1
-% global aline2; % animatedLine for fig2
 global fig1Index; % channel displayed in fig1
 global fig2Index; % channel displayed in fig2
 global fig_one; % Figure of fig1
@@ -16,17 +14,17 @@ global myFid; % Current file being saved into
 global myInfo; % All the information gathered by GUI
 global sampR; % Sampling rate
 global x; % x values to use for animatedLine
-global mainLabel;
-global uptimeLabel;
-global scalingFactor;
-global initIRIGConst;
-global IRIGsampTimeConst;
-global plotLive;
-global errorFid;
-global saveFid;
-global errorLogName;
-global saveLogName;
-global filesCreated;
+global mainLabel; % Label for clock and other information
+global uptimeLabel; % Label for uptime
+global scalingFactor; % Scaling factor for sampling >= 1 MHz
+global initIRIGConst; % Number of runs for 2 seconds worth of IRIG
+global IRIGsampTimeConst; % Amount of IRIG to be saved for each file
+global plotLive; % Boolean to live plot
+global errorFid; % FID for error log
+global saveFid; % FID for save log
+global errorLogName; % Name of error log
+global saveLogName; % Name of save log
+global filesCreated; % Number of filesCreated
 
 %% Initial variables
 myInfo = psd_info;
@@ -36,25 +34,26 @@ else
     scalingFactor = 1;
 end
 sampR = myInfo.sampRate / scalingFactor;
+aChannels = myInfo.aChannels;
+x = linspace(1,10,sampR);
+% Saving Parameters
 initIRIG = 2 * scalingFactor;
 initIRIGConst = 2 * scalingFactor;
 initIRIGdata = zeros(1,initIRIG*sampR);
 IRIGsampTime = myInfo.IRIGtime *scalingFactor;
 IRIGsampTimeConst = IRIGsampTime;
-aChannels = myInfo.aChannels;
-x = linspace(1,10,sampR);
 fileMemory = myInfo.saveMemory;
 fileTime = myInfo.saveTime;
+% Information Variables
 mainLabel = myInfo.clock;
 uptimeLabel = myInfo.uptime;
 filesCreated = 0;
-
 errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
 saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
 errorFid = fopen(errorLogName, 'wt');
 saveFid = fopen(saveLogName, 'wt');
 
-%% DAQ settings
+%% Check for DAQ connection
 daqreset;
 
 d = daq.getDevices();
@@ -83,22 +82,23 @@ end
 
 % Add Clock and Trigger
 addTriggerConnection(s, 'external', 'Dev1/PFI1', 'StartTrigger');
-cc = addClockConnection(s, 'external', 'Dev1/PFI7', 'ScanClock');
+addClockConnection(s, 'external', 'Dev1/PFI7', 'ScanClock');
 
 % Session Settings
 s.IsContinuous = true;
 s.Rate = sampR;
-lh1 = addlistener(s,'DataAvailable', @save_dataMHz);
-lh2 = addlistener(s,'ErrorOccurred', @(src, event) disp(getReport(event.Error)));
+addlistener(s,'DataAvailable', @save_dataMHz);
+addlistener(s,'ErrorOccurred', @(src, event) disp(getReport(event.Error)));
 s.NotifyWhenDataAvailableExceeds = sampR;
 
-%% Setting up plotting
+%% Set up plotting
 if plotLive
     
     fig_one = psd_info.axes1;
     fig_two = psd_info.axes2;
     activeChans = activeChans(2:end);
 
+    % Associate each figure with a channel
     if myInfo.fig1Chan == 0
         fig_one_title = 'IRIG';
         fig1Index = 0;
@@ -115,6 +115,7 @@ if plotLive
         fig2Index = find(activeChans == myInfo.fig2Chan);
     end
     
+    % Set up plot details
     title(fig_one,['Measured Voltage of ' fig_one_title])
     ylabel(fig_one,'Voltage (V)')
     ylim(fig_one,[myInfo.ylow myInfo.yhigh])
@@ -139,13 +140,16 @@ while running
         s.stop;
         fprintf('Stopping\n');
     end
-    pause(.01);
+    pause(.01); % NECESSARY PAUSE
 end
+%% End session
+% Close most recent file
 try
     fclose(myFid);
 catch
     warning('Session stopped before IRIG acquired. No files created');
 end
+% Close logs
 fclose(errorFid);
 fclose(saveFid);
 errorFileInfo = dir(errorLogName);
@@ -156,6 +160,7 @@ end
 if saveFileInfo.bytes ==0
     delete(saveLogName);
 end
+% Reset display
 daqreset();
 if plotLive
     cla(fig_one,'reset');

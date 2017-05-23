@@ -69,30 +69,9 @@ global initReady;
 global plotReady;
 global aChannels;
 global psd_info;
-global latMag;
-global latDir;
-global longMag;
-global longDir;
 global pn;
-global statName;
-global sampRate;
-global sensRef;
 global keepRunning;
-global IRIGtime;
-global suffix;
-global plotLive;
-global fig1Chan;
-global fig2Chan;
-global fig_one;
-global fig_two;
-global ylow;
-global yhigh;
-global saveType;
-global saveMemory;
-global saveTime;
-global IRIGtype;
 global newSave;
-global showPlot;
 
 keepRunning = 0;
 initReady = [0 0 0 0 0 0 ...
@@ -377,7 +356,6 @@ function startButton_Callback(hObject, eventdata, handles)
 % hObject    handle to startButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global initReady;
 global aChannels;
 global psd_info;
 global latMag;
@@ -420,11 +398,11 @@ psd_info.IRIGtype = IRIGtype;
 psd_info.saveMemory = saveMemory;
 psd_info.saveTime = saveTime;
 psd_info.saveType = saveType;
-keepRunning = 1;
 psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
 psd_info.uptime = handles.uptimeLabel;
+keepRunning = 1;
 
 set(handles.startButton,'Enable','off');
 if(newSave)
@@ -1272,4 +1250,4 @@ function showHideButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global showPlot
-showPlot = -(showPlot - 1);
+showPlot = ~showPlot;
