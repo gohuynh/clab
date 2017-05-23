@@ -36,7 +36,7 @@ else
 end
 sampR = myInfo.sampRate / scalingFactor;
 aChannels = myInfo.aChannels;
-x = linspace(1,10,sampR);
+x = linspace(0,10,sampR);
 % Saving Parameters
 initIRIG = 2 * scalingFactor;
 initIRIGConst = 2 * scalingFactor;

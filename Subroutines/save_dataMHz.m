@@ -12,7 +12,7 @@ global myFid; % Current file being saved into
 global myInfo; % All the information gathered by GUI
 global sampR; % Sampling rate
 global timeStart; % Initial time session began
-global x; % x values to use for animatedLine
+global x; % x values to use for plotting
 global mainLabel; % Label for clock and other information
 global uptimeLabel; % Label for uptime
 global scalingFactor; % Scaling factor for sampling >= 1 MHz
