@@ -17,6 +17,7 @@ global myInfo; % All the information gathered by GUI
 global sampR; % Sampling rate
 global x; % x values to use for animatedLine
 global mainLabel;
+global uptimeLabel;
 global scalingFactor;
 global initIRIGConst;
 global IRIGsampTimeConst;
@@ -25,6 +26,7 @@ global errorFid;
 global saveFid;
 global errorLogName;
 global saveLogName;
+global filesCreated;
 
 %% Initial variables
 myInfo = psd_info;
@@ -44,6 +46,8 @@ x = linspace(1,10,sampR);
 fileMemory = myInfo.saveMemory;
 fileTime = myInfo.saveTime;
 mainLabel = myInfo.clock;
+uptimeLabel = myInfo.uptime;
+filesCreated = 0;
 
 errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
 saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
@@ -158,4 +162,5 @@ if plotLive
     cla(fig_two,'reset');
 end
 set(myInfo.clock,'String','00:00:00');
+set(myInfo.uptime,'String','Files Created: n/a');
 cd('..');

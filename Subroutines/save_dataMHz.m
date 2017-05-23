@@ -16,6 +16,7 @@ global sampR; % Sampling rate
 global timeStart; % Initial time session began
 global x; % x values to use for animatedLine
 global mainLabel;
+global uptimeLabel;
 global scalingFactor;
 global initIRIGConst;
 global IRIGsampTimeConst;
@@ -28,6 +29,7 @@ global saveFid;
 global errorLogName;
 global saveLogName;
 global showPlot;
+global filesCreated;
 
 %% Seperate data from daq
 data = event.Data';
@@ -61,11 +63,14 @@ if initIRIG == 0
     fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
     fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
     myFid = write_header(myInfo,fileName);
+    filesCreated = filesCreated + 1;
     fileInfo = dir(fileName);
     fprintf(saveFid, 'aBytes: %d\n', fileInfo.bytes);
 elseif initIRIG < 0
     %% Continuous code
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
+    timeElapsed = round(datevec(currTime - timeStart));
+    set(uptimeLabel, 'String', sprintf('Files Created: %d (%dd %dh %dm %ds)', filesCreated, timeElapsed(3:end)));
     currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
@@ -163,6 +168,7 @@ elseif initIRIG < 0
         fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
         fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
         myFid = write_header(myInfo,fileName);
+        filesCreated = filesCreated + 1;
         fprintf(saveFid, 'File bytes: %d\n', fileInfo.bytes);
         fprintf('File saved\n');
     end

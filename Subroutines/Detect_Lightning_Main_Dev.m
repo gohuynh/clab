@@ -424,6 +424,7 @@ keepRunning = 1;
 psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
+psd_info.uptime = handles.uptimeLabel;
 
 set(handles.startButton,'Enable','off');
 if(newSave)

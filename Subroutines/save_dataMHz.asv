@@ -27,6 +27,8 @@ global errorFid;
 global saveFid;
 global errorLogName;
 global saveLogName;
+global showPlot;
+global filesCreated;
 
 %% Seperate data from daq
 data = event.Data';
@@ -60,30 +62,35 @@ if initIRIG == 0
     fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
     fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
     myFid = write_header(myInfo,fileName);
+    filesCreated = filesCreated + 1;
     fileInfo = dir(fileName);
     fprintf(saveFid, 'aBytes: %d\n', fileInfo.bytes);
 elseif initIRIG < 0
     %% Continuous code
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
+    timeElapsed = s
     currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
-    if plotLive
+    if plotLive && showPlot
         if fig1Index ~= 0
             delete(fig_one.Children);
             plot(fig_one,x,chanData(fig1Index,1:sampR),'color','b');
         else
-            delete(fig_one.Children)
+            delete(fig_one.Children);
             plot(fig_one,x,irigData(1,1:sampR),'color','b');
         end
         if fig2Index ~= 0
-            delete(fig_two.Children)
+            delete(fig_two.Children);
             plot(fig_two,x,chanData(fig2Index,1:sampR),'color','r');
         else
-            delete(fig_two.Children)
+            delete(fig_two.Children);
             plot(fig_two,x,irigData(1,1:sampR),'color','r');
         end
 %         x = x + sampR;
+    elseif showPlot == 0 && (~isempty(fig_one.Children) || ~isempty(fig_two.Children))
+        delete(fig_one.Children);
+        delete(fig_two.Children);
     end
     
     if IRIGsampTime~=0
@@ -159,6 +166,7 @@ elseif initIRIG < 0
         fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
         fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
         myFid = write_header(myInfo,fileName);
+        filesCreated = filesCreated + 1;
         fprintf(saveFid, 'File bytes: %d\n', fileInfo.bytes);
         fprintf('File saved\n');
     end
@@ -169,7 +177,7 @@ elseif initIRIG < 0
         errorFileInfo = dir(errorLogName);
         saveFileInfo = dir(saveLogName);
         if errorFileInfo.bytes == 0
-            delete(errorFileName);
+            delete(errorLogName);
         end
         errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
         saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
