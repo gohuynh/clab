@@ -1,8 +1,10 @@
 Done-
 	- check if save size too small (4.5)
 	- turn on/off plot during session
-    - display uptime
-    - check if enough IRIG was saved else delete file
+	- display uptime
+    	- check if enough IRIG was saved else delete file
+	- GB not working
+	- show current time not previous time
 
 To test-
 

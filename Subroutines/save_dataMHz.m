@@ -67,10 +67,10 @@ if initIRIG == 0
 elseif initIRIG < 0
     %% Continuous code
     % logistics done at the beginning of every loop
+    currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
     timeElapsed = round(datevec(currTime - timeStart));
     set(uptimeLabel, 'String', sprintf('Files Created: %d (%dd %dh %dm %ds)', filesCreated, timeElapsed(3:end)));
-    currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
     %% Manages the plots

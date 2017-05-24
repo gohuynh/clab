@@ -65,7 +65,6 @@ movegui('center');
 % uiwait(handles.MainGUI);
 
 % Global Variables
-clear global
 global initReady;
 global plotReady;
 global aChannels;
@@ -417,10 +416,14 @@ pause(.25);
 
 set(handles.statusLabel,'String','Sampling...');
 runEnDis(handles,0);
-cd('Subroutines');
-samp_and_saveMHz(psd_info);
+% cd('Subroutines');
+% samp_and_saveMHz(psd_info);
 fprintf('Session stopped\n');
 set(handles.statusLabel,'String','Ready');
+
+
+
+
 
 
 % --- Executes on button press in stopButton.
@@ -1170,15 +1173,100 @@ if ~isempty(config)
     fig1Menu_Callback(hObject, eventdata, handles);
     set(handles.fig2Menu,'Value',config.fig2Menu);
     fig2Menu_Callback(hObject, eventdata, handles);
-    set(handles.ylowText,'String',config.ylowText);
+    temp = fread(cfid,1,'uint8');
+    set(handles.ylowText,'String',char(fread(cfid,temp,'char'))');
     ylowText_Callback(hObject, eventdata, handles);
-    set(handles.yhighText,'String',config.yhighText);
+    temp = fread(cfid,1,'uint8');
+    set(handles.yhighText,'String',char(fread(cfid,temp,'char'))');
     yhighText_Callback(hObject, eventdata, handles);
     newSave = 0;
 else
     newSave = 1;
 end
-
+% global initReady;
+% global sensRef;
+% global statName;
+% global pn;
+% global newSave;
+% cd('Subroutines');
+% cfid = fopen('config.txt','r');
+% cd('..');
+% dne = [];
+% try
+%     fread(cfid,'uint16');
+%     frewind(cfid);
+%     dne = 1;
+% catch
+%     warning('config.txt does not exist! Please manually fill in parameters.');
+%     dne = 0;
+% end
+% if dne
+%     set(handles.sampRateMenu,'Value',fread(cfid,1,'uint8'));
+%     sampRateMenu_Callback(hObject, eventdata, handles);
+%     set(handles.IRIGtimeMenu,'Value',fread(cfid,1,'uint8'));
+%     IRIGtimeMenu_Callback(hObject, eventdata, handles);
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.latMagText,'String',char(fread(cfid,temp,'char'))');
+%     latMagText_Callback(hObject, eventdata, handles);
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.longMagText,'String',char(fread(cfid,temp,'*char'))');
+%     longMagText_Callback(hObject, eventdata, handles);
+%     set(handles.latMenu,'Value',fread(cfid,1,'uint8'));
+%     latMenu_Callback(hObject, eventdata, handles);
+%     set(handles.longMenu,'Value',fread(cfid,1,'uint8'));
+%     longMenu_Callback(hObject, eventdata, handles);
+%     set(handles.IRIGtypeMenu,'Value',fread(cfid,1,'uint8'));
+%     IRIGtypeMenu_Callback(hObject, eventdata, handles);
+%     set(handles.sensorMenu,'Value',fread(cfid,1,'uint8'));
+%     temp = fread(cfid,1,'uint8');
+%     sensRef = char(fread(cfid,temp,'char'))';
+%     initReady(3) = 1;
+%     set(handles.statNameMenu,'Value',fread(cfid,1,'uint8'));
+%     temp = fread(cfid,1,'uint8');
+%     statName = char(fread(cfid,temp,'char'))';
+%     initReady(2) = 1;
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.footerText,'String',char(fread(cfid,temp,'char'))');
+%     footerText_Callback(hObject, eventdata, handles);
+%     set(handles.fileSizeTypeMenu,'Value',fread(cfid,1,'uint8'));
+%     fileSizeTypeMenu_Callback(hObject, eventdata, handles);
+%     temp = fread(cfid,1,'uint8');
+%     pn = char(fread(cfid,temp,'char'))';
+%     initReady(4) = 1;
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.memQuantText,'String',char(fread(cfid,temp,'char'))');
+%     memQuantText_Callback(hObject, eventdata, handles);
+%     set(handles.ai1Box,'Value',fread(cfid,1,'uint8'));
+%     ai1Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai2Box,'Value',fread(cfid,1,'uint8'));
+%     ai2Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai3Box,'Value',fread(cfid,1,'uint8'));
+%     ai3Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai4Box,'Value',fread(cfid,1,'uint8'));
+%     ai4Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai5Box,'Value',fread(cfid,1,'uint8'));
+%     ai5Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai6Box,'Value',fread(cfid,1,'uint8'));
+%     ai6Box_Callback(hObject, eventdata, handles);
+%     set(handles.ai7Box,'Value',fread(cfid,1,'uint8'));
+%     ai7Box_Callback(hObject, eventdata, handles);
+%     set(handles.plotBox,'Value',fread(cfid,1,'uint8'));
+%     plotBox_Callback(hObject, eventdata, handles);
+%     set(handles.fig1Menu,'Value',fread(cfid,1,'uint8'));
+%     fig1Menu_Callback(hObject, eventdata, handles);
+%     set(handles.fig2Menu,'Value',fread(cfid,1,'uint8'));
+%     fig2Menu_Callback(hObject, eventdata, handles);
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.ylowText,'String',char(fread(cfid,temp,'char'))');
+%     ylowText_Callback(hObject, eventdata, handles);
+%     temp = fread(cfid,1,'uint8');
+%     set(handles.yhighText,'String',char(fread(cfid,temp,'char'))');
+%     yhighText_Callback(hObject, eventdata, handles);
+%     fclose(cfid);
+%     newSave = 0;
+% else
+%     newSave = 1;
+% end
 
 function runEnDis(handles, onoff)
 global plotLive;
