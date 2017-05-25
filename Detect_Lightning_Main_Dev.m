@@ -409,7 +409,7 @@ set(handles.startButton,'Enable','off');
 if(newSave)
     set(handles.statusLabel,'String','Saving new configurations');
     cd('Subroutines');
-    write_configv2(handles,psd_info);
+    write_config(handles,psd_info);
     cd('..');
 end
 set(handles.statusLabel,'String','Starting session... please wait.');
