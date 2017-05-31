@@ -53,7 +53,7 @@ if initIRIG == 0
     myInfo.timeStart = datestr(timeStart,'yyyy:mm:dd:HH:MM:SS:FFF');
     initIRIG = initIRIG - 1;
     fprintf('Time start acquired\n');
-    fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
+    fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
     fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
     myFid = write_header(myInfo,fileName);
     filesCreated = filesCreated + 1;
@@ -64,7 +64,7 @@ elseif initIRIG < 0
     % logistics done at the beginning of every loop
     currTime = add_seconds(currTime,1/scalingFactor); %% time after samples acquired
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
-    timeElapsed = round(datevec(datenum(currTime) - datenum(timeStart)));
+    timeElapsed = round(datevec(currTime - timeStart));
     set(uptimeLabel, 'String', sprintf('Files Created: %d (%dd %dh %dm %ds)', filesCreated, timeElapsed(3:end)));
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
