@@ -57,8 +57,8 @@ saveFid = fopen(saveLogName, 'wt');
 %% Check for DAQ connection
 daqreset;
 
-d = daq.getDevices();
 try
+    d = daq.getDevices();
     name = d(1).ID;
     switch name
         case 'Dev1'
@@ -66,8 +66,7 @@ try
             cd('..');
             error('ERROR: Dev1 not found');
     end
-    cardResolution = get_resolution(d);
-    myInfo.cardResolution = cardResolution;
+    myInfo.cardResolution = get_resolution(d);
 catch
     cd('..');
     error('ERROR: DAQ board not detected');
