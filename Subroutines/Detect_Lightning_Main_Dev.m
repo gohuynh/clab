@@ -65,6 +65,7 @@ movegui('center');
 % uiwait(handles.MainGUI);
 
 % Global Variables
+clear global
 global initReady;
 global plotReady;
 global aChannels;
@@ -420,10 +421,6 @@ cd('Subroutines');
 samp_and_saveMHz(psd_info);
 fprintf('Session stopped\n');
 set(handles.statusLabel,'String','Ready');
-
-
-
-
 
 
 % --- Executes on button press in stopButton.
@@ -1064,7 +1061,7 @@ else
         end
     elseif saveType == 3
         scaledQuant = tempQuant*1e9;
-        if scaledQuant < 2*sampR*IRIGtime
+        if scaledQuant < 2*IRIGtime*sampRate
             initReady(11) = 0;
         else
             saveMemory = scaledQuant;
@@ -1116,90 +1113,72 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 function getConfig(hObject, eventdata, handles)
-global initReady;
-global sensRef;
-global statName;
-global pn;
 global newSave;
-cd('Subroutines');
-cfid = fopen('config.txt','r');
-cd('..');
-dne = [];
+global pn;
+global initReady;
+config = [];
 try
-    fread(cfid,'uint16');
-    frewind(cfid);
-    dne = 1;
+    load('Subroutines\config.mat');
 catch
-    warning('config.txt does not exist! Please manually fill in parameters.');
-    dne = 0;
+    warning('config.mat does not exist! Please manually fill in parameters.');
 end
-if dne
-    set(handles.sampRateMenu,'Value',fread(cfid,1,'uint8'));
+
+if ~isempty(config)
+    set(handles.sampRateMenu,'Value',config.sampRateMenu);
     sampRateMenu_Callback(hObject, eventdata, handles);
-    set(handles.IRIGtimeMenu,'Value',fread(cfid,1,'uint8'));
+    set(handles.IRIGtimeMenu,'Value',config.IRIGtimeMenu);
     IRIGtimeMenu_Callback(hObject, eventdata, handles);
-    temp = fread(cfid,1,'uint8');
-    set(handles.latMagText,'String',char(fread(cfid,temp,'char'))');
+    set(handles.latMagText,'String',config.latMagText);
     latMagText_Callback(hObject, eventdata, handles);
-    temp = fread(cfid,1,'uint8');
-    set(handles.longMagText,'String',char(fread(cfid,temp,'*char'))');
+    set(handles.longMagText,'String',config.longMagText);
     longMagText_Callback(hObject, eventdata, handles);
-    set(handles.latMenu,'Value',fread(cfid,1,'uint8'));
+    set(handles.latMenu,'Value',config.latMenu);
     latMenu_Callback(hObject, eventdata, handles);
-    set(handles.longMenu,'Value',fread(cfid,1,'uint8'));
+    set(handles.longMenu,'Value',config.longMenu);
     longMenu_Callback(hObject, eventdata, handles);
-    set(handles.IRIGtypeMenu,'Value',fread(cfid,1,'uint8'));
+    set(handles.IRIGtypeMenu,'Value',config.IRIGtypeMenu);
     IRIGtypeMenu_Callback(hObject, eventdata, handles);
-    set(handles.sensorMenu,'Value',fread(cfid,1,'uint8'));
-    temp = fread(cfid,1,'uint8');
-    sensRef = char(fread(cfid,temp,'char'))';
-    initReady(3) = 1;
-    set(handles.statNameMenu,'Value',fread(cfid,1,'uint8'));
-    temp = fread(cfid,1,'uint8');
-    statName = char(fread(cfid,temp,'char'))';
-    initReady(2) = 1;
-    temp = fread(cfid,1,'uint8');
-    set(handles.footerText,'String',char(fread(cfid,temp,'char'))');
+    set(handles.sensorMenu,'Value',config.sensorMenu);
+    sensorMenu_Callback(hObject, eventdata, handles);
+    set(handles.statNameMenu,'Value',config.statNameMenu);
+    statNameMenu_Callback(hObject, eventdata, handles);
+    set(handles.footerText,'String',config.footerText);
     footerText_Callback(hObject, eventdata, handles);
-    set(handles.fileSizeTypeMenu,'Value',fread(cfid,1,'uint8'));
+    set(handles.fileSizeTypeMenu,'Value',config.fileSizeTypeMenu);
     fileSizeTypeMenu_Callback(hObject, eventdata, handles);
-    temp = fread(cfid,1,'uint8');
-    pn = char(fread(cfid,temp,'char'))';
+    pn = config.pn;
     initReady(4) = 1;
-    temp = fread(cfid,1,'uint8');
-    set(handles.memQuantText,'String',char(fread(cfid,temp,'char'))');
+    set(handles.memQuantText,'String',config.memQuantText);
     memQuantText_Callback(hObject, eventdata, handles);
-    set(handles.ai1Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai1Box,'Value',config.ai1Box);
     ai1Box_Callback(hObject, eventdata, handles);
-    set(handles.ai2Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai2Box,'Value',config.ai2Box);
     ai2Box_Callback(hObject, eventdata, handles);
-    set(handles.ai3Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai3Box,'Value',config.ai3Box);
     ai3Box_Callback(hObject, eventdata, handles);
-    set(handles.ai4Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai4Box,'Value',config.ai4Box);
     ai4Box_Callback(hObject, eventdata, handles);
-    set(handles.ai5Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai5Box,'Value',config.ai5Box);
     ai5Box_Callback(hObject, eventdata, handles);
-    set(handles.ai6Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai6Box,'Value',config.ai6Box);
     ai6Box_Callback(hObject, eventdata, handles);
-    set(handles.ai7Box,'Value',fread(cfid,1,'uint8'));
+    set(handles.ai7Box,'Value',config.ai7Box);
     ai7Box_Callback(hObject, eventdata, handles);
-    set(handles.plotBox,'Value',fread(cfid,1,'uint8'));
+    set(handles.plotBox,'Value',config.plotBox);
     plotBox_Callback(hObject, eventdata, handles);
-    set(handles.fig1Menu,'Value',fread(cfid,1,'uint8'));
+    set(handles.fig1Menu,'Value',config.fig1Menu);
     fig1Menu_Callback(hObject, eventdata, handles);
-    set(handles.fig2Menu,'Value',fread(cfid,1,'uint8'));
+    set(handles.fig2Menu,'Value',config.fig2Menu);
     fig2Menu_Callback(hObject, eventdata, handles);
-    temp = fread(cfid,1,'uint8');
-    set(handles.ylowText,'String',char(fread(cfid,temp,'char'))');
+    set(handles.ylowText,'String',config.ylowText);
     ylowText_Callback(hObject, eventdata, handles);
-    temp = fread(cfid,1,'uint8');
-    set(handles.yhighText,'String',char(fread(cfid,temp,'char'))');
+    set(handles.yhighText,'String',config.yhighText);
     yhighText_Callback(hObject, eventdata, handles);
-    fclose(cfid);
     newSave = 0;
 else
     newSave = 1;
 end
+
 
 function runEnDis(handles, onoff)
 global plotLive;

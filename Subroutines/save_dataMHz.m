@@ -46,19 +46,14 @@ if initIRIG == 0
     initTime = get_irig_start_time(initIRIGdata,sampR*scalingFactor,myInfo.IRIGtype);
     c = clock;
     year = c(1);
-    jan1=strcat('01/01/',num2str(year));
-    doy = initTime(1);
-    startDate = datevec(addtodate(datenum(jan1), doy-1, 'day'));
-    startDate = [startDate(1:3) initTime(2:end)];
-    timeStart = datenum(startDate);
-    timeStart = addtodate(timeStart,2,'second');
+    timeStart = datevec(datenum(year, 0, initTime(1), initTime(2), initTime(3), initTime(4)));
+    timeStart = add_seconds(timeStart,2);
     currTime = timeStart;
 
-    date = datevec(timeStart);
-    myInfo.timeStart = datestr(date,'yyyy:mm:dd:HH:MM:SS:FFF');
+    myInfo.timeStart = datestr(timeStart,'yyyy:mm:dd:HH:MM:SS:FFF');
     initIRIG = initIRIG - 1;
     fprintf('Time start acquired\n');
-    fileName = strcat(myInfo.pn,'\',datestr(date,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
+    fileName = strcat(myInfo.pn,'\',datestr(currTime,'yyyymmdd_HHMMSS_'),myInfo.statName,'_',myInfo.suffix,'.cbin');
     fprintf(saveFid, ['File begin: ', datestr(datetime('now')), '\n'], 'char');
     myFid = write_header(myInfo,fileName);
     filesCreated = filesCreated + 1;
@@ -67,10 +62,10 @@ if initIRIG == 0
 elseif initIRIG < 0
     %% Continuous code
     % logistics done at the beginning of every loop
+    currTime = add_seconds(currTime,1/scalingFactor); %% time after samples acquired
     set(mainLabel,'String',datestr(currTime,'HH:MM:SS'));
-    timeElapsed = round(datevec(currTime - timeStart));
+    timeElapsed = round(datevec(datenum(currTime) - datenum(timeStart)));
     set(uptimeLabel, 'String', sprintf('Files Created: %d (%dd %dh %dm %ds)', filesCreated, timeElapsed(3:end)));
-    currTime = addtodate(currTime,1000/scalingFactor,'millisecond'); %% time after samples acquired
     fprintf(saveFid, ['   DATA IN: ', datestr(datetime('now'), 'HH:MM:SS:FFF'), ' | '], 'char');
     
     %% Manages the plots
