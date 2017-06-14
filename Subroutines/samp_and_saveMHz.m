@@ -26,6 +26,8 @@ global saveFid; % FID for save log
 global errorLogName; % Name of error log
 global saveLogName; % Name of save log
 global filesCreated; % Number of files created
+global eof_IRIG;
+global restart_session;
 
 %% Initial variables
 myInfo = psd_info;
@@ -53,6 +55,8 @@ errorLogName = ['Logs/error_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '
 saveLogName = ['Logs/save_log_', datestr(datetime('now'),'yyyymmdd_HHMMSS'), '.txt'];
 errorFid = fopen(errorLogName, 'wt');
 saveFid = fopen(saveLogName, 'wt');
+eof_IRIG = 0;
+restart_session = 0;
 
 %% Check for DAQ connection
 daqreset;
@@ -177,3 +181,9 @@ end
 set(myInfo.clock,'String','00:00:00');
 set(myInfo.uptime,'String','Files Created: n/a');
 cd('..');
+if restart_session
+    startButton = myInfo.handles.startButton;
+    startCallback = startButton.Callback;
+    startCallback(startButton,[]);
+    return;
+end

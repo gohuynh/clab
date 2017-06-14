@@ -28,6 +28,8 @@ global errorLogName; % Name of error log
 global saveLogName; % Name of save log
 global showPlot; % Boolean to show or hide plot
 global filesCreated; % Number of files created
+global eof_IRIG;
+global restart_session;
 
 %% Seperate data from daq
 data = event.Data';
@@ -44,6 +46,7 @@ end
 if initIRIG == 0
     %% Calculate and store initial start time
     initTime = get_irig_start_time(initIRIGdata,sampR*scalingFactor,myInfo.IRIGtype);
+    initIRIGdata = [];
     c = clock;
     year = c(1);
     timeStart = datevec(datenum(year, 0, initTime(1), initTime(2), initTime(3), initTime(4)));
@@ -147,6 +150,45 @@ elseif initIRIG < 0
         fileInfo = dir(fileName);
         fprintf(saveFid, '      eWrites: %d | aWrites: %d | eBytes: %d | aBytes: %d\n',...
                 size(chanData,1)*sampR, writes, 2*(size(chanData,1)*sampR), fileInfo.bytes);
+            
+    end
+    
+        %% IRIG check
+    
+    if eof_IRIG > 0
+        fprintf('here2\n');
+        eof_IRIG = eof_IRIG - 1;
+        initIRIGdata(sampR*(initIRIGConst-eof_IRIG-1)+1:sampR*(initIRIGConst-eof_IRIG)) = irigData;
+        if eof_IRIG == 0;
+            try
+                initTime = get_irig_start_time(initIRIGdata,sampR*scalingFactor,myInfo.IRIGtype);
+                c = clock;
+                year = c(1);
+                timeEnd = datevec(datenum(year, 0, initTime(1), initTime(2), initTime(3), initTime(4)));
+                timeEnd = add_seconds(timeEnd,2);
+                if ~all(timeEnd == currTime)
+                    error('times do not match up');
+                end
+            catch
+                errormsg = sprintf('Timing mismatched, restarted session at %s\n',datestr(datetime('now')));
+                fprintf(errorFid, errormsg,'char');
+                stopButton = myInfo.handles.stopButton;
+                stopCallback = stopButton.Callback;
+                stopCallback(stopButton,[]);
+                restart_session = 1;
+                return;
+            end
+        end
+    else
+        if myInfo.saveType == 2 || myInfo.saveType == 3
+            if fileMemory >= 3*scalingFactor*2*sampR*size(chanData,1) && fileMemory < 4*scalingFactor*2*size(chanData,1)
+                eof_IRIG = initIRIGConst;
+            end
+        else
+            if fileTime >= 3 && fileTime < 3+1/scalingFactor
+                eof_IRIG = initIRIGConst;
+            end
+        end
     end
     
     %% File management
@@ -193,5 +235,4 @@ elseif initIRIG < 0
         errorFid = fopen(errorLogName, 'wt');
         saveFid = fopen(saveLogName, 'wt');
     end
-    
 end

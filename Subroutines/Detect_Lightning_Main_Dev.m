@@ -403,6 +403,7 @@ psd_info.axes1 = handles.axes1;
 psd_info.axes2 = handles.axes2;
 psd_info.clock = handles.dataInLabel;
 psd_info.uptime = handles.uptimeLabel;
+psd_info.handles = handles;
 keepRunning = 1;
 
 set(handles.startButton,'Enable','off');
@@ -572,7 +573,7 @@ global aChannels;
 global newSave;
 if newSave == 0
     newSave = 1;
-    set(handles.dataInLabel,'String','Changes detected, config.txt will be updated on start');
+    set(handles.dataInLabel,'String','Changes detected, config will be updated');
 end
 if initReady(1) && initReady(9) && initReady(10)
     set(handles.memQuantText,'Enable','on');
@@ -1146,8 +1147,10 @@ if ~isempty(config)
     footerText_Callback(hObject, eventdata, handles);
     set(handles.fileSizeTypeMenu,'Value',config.fileSizeTypeMenu);
     fileSizeTypeMenu_Callback(hObject, eventdata, handles);
-    pn = config.pn;
-    initReady(4) = 1;
+    if exist(config.pn,'dir') == 7
+        pn = config.pn;
+        initReady(4) = 1;
+    end
     set(handles.memQuantText,'String',config.memQuantText);
     memQuantText_Callback(hObject, eventdata, handles);
     set(handles.ai1Box,'Value',config.ai1Box);
