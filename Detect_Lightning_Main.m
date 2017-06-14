@@ -1,35 +1,35 @@
-function varargout = Detect_Lightning_Main_Dev(varargin)
-% DETECT_LIGHTNING_MAIN_DEV MATLAB code for Detect_Lightning_Main_Dev.fig
-%      DETECT_LIGHTNING_MAIN_DEV, by itself, creates a new DETECT_LIGHTNING_MAIN_DEV or raises the existing
+function varargout = Detect_Lightning_Main(varargin)
+% DETECT_LIGHTNING_MAIN MATLAB code for Detect_Lightning_Main.fig
+%      DETECT_LIGHTNING_MAIN, by itself, creates a new DETECT_LIGHTNING_MAIN or raises the existing
 %      singleton*.
 %
-%      H = DETECT_LIGHTNING_MAIN_DEV returns the handle to a new DETECT_LIGHTNING_MAIN_DEV or the handle to
+%      H = DETECT_LIGHTNING_MAIN returns the handle to a new DETECT_LIGHTNING_MAIN or the handle to
 %      the existing singleton*.
 %
-%      DETECT_LIGHTNING_MAIN_DEV('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in DETECT_LIGHTNING_MAIN_DEV.M with the given input arguments.
+%      DETECT_LIGHTNING_MAIN('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in DETECT_LIGHTNING_MAIN.M with the given input arguments.
 %
-%      DETECT_LIGHTNING_MAIN_DEV('Property','Value',...) creates a new DETECT_LIGHTNING_MAIN_DEV or raises the
+%      DETECT_LIGHTNING_MAIN('Property','Value',...) creates a new DETECT_LIGHTNING_MAIN or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before Detect_Lightning_Main_Dev_OpeningFcn gets called.  An
+%      applied to the GUI before Detect_Lightning_Main_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to Detect_Lightning_Main_Dev_OpeningFcn via varargin.
+%      stop.  All inputs are passed to Detect_Lightning_Main_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help Detect_Lightning_Main_Dev
+% Edit the above text to modify the response to help Detect_Lightning_Main
 
-% Last Modified by GUIDE v2.5 23-May-2017 09:37:46
+% Last Modified by GUIDE v2.5 14-Jun-2017 14:30:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @Detect_Lightning_Main_Dev_OpeningFcn, ...
-                   'gui_OutputFcn',  @Detect_Lightning_Main_Dev_OutputFcn, ...
+                   'gui_OpeningFcn', @Detect_Lightning_Main_OpeningFcn, ...
+                   'gui_OutputFcn',  @Detect_Lightning_Main_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,15 +44,15 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before Detect_Lightning_Main_Dev is made visible.
-function Detect_Lightning_Main_Dev_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before Detect_Lightning_Main is made visible.
+function Detect_Lightning_Main_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to Detect_Lightning_Main_Dev (see VARARGIN)
+% varargin   command line arguments to Detect_Lightning_Main (see VARARGIN)
 
-% Choose default command line output for Detect_Lightning_Main_Dev
+% Choose default command line output for Detect_Lightning_Main
 handles.output = hObject;
 
 % Update handles structure
@@ -61,7 +61,7 @@ guidata(hObject, handles);
 % move GUI in the middle of the screen
 movegui('center');
 
-% UIWAIT makes Detect_Lightning_Main_Dev wait for user response (see UIRESUME)
+% UIWAIT makes Detect_Lightning_Main wait for user response (see UIRESUME)
 % uiwait(handles.MainGUI);
 
 % Global Variables
@@ -91,7 +91,7 @@ getConfig(hObject, eventdata, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = Detect_Lightning_Main_Dev_OutputFcn(hObject, eventdata, handles) 
+function varargout = Detect_Lightning_Main_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
